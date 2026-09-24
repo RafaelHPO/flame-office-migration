@@ -1,0 +1,29 @@
+# Segredos e configurações locais
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.*
+
+# Dados reais, fontes legadas e resultados de análise local
+*.xls
+*.xlsx
+*.xlsm
+*.csv
+*.xml
+*.json
+!*.example.json
+!*.schema.json
+dados_reais/
+extratos/
+vba_extraido/
+powerquery_extraido/
+
+# Ambiente de desenvolvimento
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
