@@ -4,6 +4,14 @@ Projeto de migração de um sistema operacional baseado em Excel/VBA/Power Query
 
 **Estado:** levantamento funcional e modelo conceitual inicial. Ainda não há esquema de banco, integração ou interface implementados neste repositório. O proprietário do sistema fará a implementação; esta documentação registra as decisões e o caminho de migração.
 
+## Tecnologias previstas
+
+- **Python:** importadores, regras de integração e interface.
+- **PostgreSQL no Supabase:** dados relacionais, integridade, operações transacionais e consultas.
+- **XML/JSON:** formatos de entrada previstos para pedidos e extratos das plataformas.
+
+Essas tecnologias descrevem o plano. O repositório ainda não contém código Python ou SQL; a implementação será publicada conforme for desenvolvida.
+
 ## Objetivo
 
 Conectar vendas e repasses das plataformas ao consumo de insumos, às compras e aos resultados financeiros. Cada valor exibido deve poder ser rastreado até um pedido, documento, movimento ou evento de origem.
