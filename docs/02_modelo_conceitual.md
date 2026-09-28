@@ -42,6 +42,8 @@ O ciclo no diagrama representa a possibilidade de um combo incluir outro item ve
 - **Estoque auditável:** contagem física na virada, seguida de movimentos com origem. Custo médio móvel para entradas elegíveis; a saída conserva o custo aplicado no momento.
 - **Importação idempotente:** repetir um lote não cria novos pedidos, movimentos ou contas. Erros de mapeamento ficam visíveis para correção.
 - **Conciliação por evidência:** o vencimento previsto não comprova pagamento. Extrato de plataforma confirma o repasse; confirmação bancária poderá ser uma etapa posterior.
+- **Recebível por pedido:** cada pedido válido importado gera um valor a receber. O lote de repasse agrupa esses pedidos, taxas e ajustes para conferência, sem criar outro recebível. Um crédito bancário pode ser distribuído entre vários recebíveis.
+- **Pagamento de despesas:** nota de entrada ou cadastro manual cria a conta a pagar e seus vencimentos. A transação bancária conciliada confirma a baixa, inclusive parcial.
 - **Preço reproduzível:** mostrar margem com volume previsto e realizado, taxas por canal e impacto de promoção.
 - **Segurança por loja:** acesso e relatórios precisam respeitar a loja e o papel do usuário. A política concreta depende do cadastro de usuários.
 

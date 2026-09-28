@@ -2,7 +2,7 @@
 
 Projeto de migração de um sistema operacional baseado em Excel/VBA/Power Query para uma aplicação modular de conciliação de delivery, estoque, compras, finanças e precificação. A primeira versão está sendo planejada com PostgreSQL local e uma interface em Python.
 
-**Estado:** levantamento funcional, modelo conceitual e primeiro rascunho SQL. O esquema ainda está em revisão; integrações e interface não foram implementadas neste repositório. O proprietário do sistema fará a implementação; esta documentação registra as decisões e o caminho de migração.
+**Estado:** levantamento funcional, modelo conceitual e rascunho SQL, agora incluindo contas a pagar/receber, repasses e conciliação bancária. O esquema ainda está em revisão; integrações e interface não foram implementadas neste repositório. O proprietário do sistema fará a implementação; esta documentação registra as decisões e o caminho de migração.
 
 ## Tecnologias previstas
 
@@ -49,7 +49,7 @@ O modelo atende uma loja inicialmente e prevê outras lojas no futuro. Uma integ
 - [Inventário funcional do legado](docs/01_inventario_funcional.md): funções existentes e destino proposto.
 - [Modelo conceitual](docs/02_modelo_conceitual.md): entidades, fluxos e regras de desenho.
 - [Roteiro de migração](docs/03_roteiro.md): sequência de trabalho e critérios de conferência.
-- [Primeiro rascunho do esquema SQL](sql/esquema_inicial.sql): tabelas iniciais escritas pelo proprietário e criadas com sucesso em um esquema isolado de teste PostgreSQL 17. Ainda não é uma migração definitiva.
+- [Rascunho do esquema SQL](sql/esquema_inicial.sql): tabelas iniciais escritas pelo proprietário e criadas com sucesso em um esquema isolado de teste PostgreSQL 17; o bloco financeiro é uma proposta posterior e ainda não foi executado. Ainda não é uma migração definitiva.
 
 ## Escopo público
 
