@@ -1,16 +1,16 @@
 # FLAME OFFICE — migração de uma planilha para um sistema de gestão
 
-Projeto de migração de um sistema operacional baseado em Excel/VBA/Power Query para uma aplicação modular de conciliação de delivery, estoque, compras, finanças e precificação. O desenho prevê PostgreSQL no Supabase e uma interface em Python.
+Projeto de migração de um sistema operacional baseado em Excel/VBA/Power Query para uma aplicação modular de conciliação de delivery, estoque, compras, finanças e precificação. A primeira versão está sendo planejada com PostgreSQL local e uma interface em Python.
 
 **Estado:** levantamento funcional e modelo conceitual inicial. Ainda não há esquema de banco, integração ou interface implementados neste repositório. O proprietário do sistema fará a implementação; esta documentação registra as decisões e o caminho de migração.
 
 ## Tecnologias previstas
 
 - **Python:** importadores, regras de integração e interface.
-- **PostgreSQL no Supabase:** dados relacionais, integridade, operações transacionais e consultas.
+- **PostgreSQL local:** dados relacionais, integridade, operações transacionais e consultas, sem depender de plano pago.
 - **XML/JSON:** formatos de entrada previstos para pedidos e extratos das plataformas.
 
-Essas tecnologias descrevem o plano. O repositório ainda não contém código Python ou SQL; a implementação será publicada conforme for desenvolvida.
+Essas tecnologias descrevem o plano. O repositório ainda não contém código Python ou SQL; a implementação será publicada conforme for desenvolvida. A hospedagem poderá ser reavaliada se houver necessidade de acesso remoto ou disponibilidade contínua.
 
 ## Objetivo
 

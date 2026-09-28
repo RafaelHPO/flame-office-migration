@@ -9,7 +9,7 @@ O desenho começa com uma loja e permite várias lojas. Identificadores internos
 | Organização | organização, loja, usuário e permissão | Uma organização pode ter várias lojas. |
 | Integrações | plataforma, conta, lote e registro de origem | Cada importação conserva fonte, versão, estado e erros. |
 | Catálogo | produto vendável, item de estoque, unidade e conversão | Produto vendido pode consumir vários insumos; unidade de compra pode diferir da unidade de consumo. |
-| Fornecedores | fornecedor, item do fornecedor e cotação | Um item interno pode ter vários fornecedores e preços datados. |
+| Fornecedores | fornecedor, linhas de compra e cotações futuras | Um item interno pode ter vários fornecedores; o vínculo inicial vem das entradas registradas. |
 | Produção | ficha técnica, componente, combo e item do combo | Ficha técnica descreve insumos do produto; combo descreve produtos vendáveis que o compõem. |
 | Vendas | pedido, item e escolha do item | O pedido registra a composição realmente escolhida pelo cliente. |
 | Estoque | contagem, movimento e custo aplicado | Saldo é explicado por abertura, entradas, saídas e ajustes. |
@@ -50,9 +50,7 @@ O ciclo no diagrama representa a possibilidade de um combo incluir outro item ve
 | Camada | Responsabilidade |
 |---|---|
 | Importador Python | Ler e validar XML/JSON, preservar origem, mapear códigos e registrar lotes/rejeições. |
-| PostgreSQL/Supabase | Garantir relações, unicidade e operações transacionais; guardar movimentos, eventos e auditoria; oferecer consultas de apuração. |
+| PostgreSQL local | Garantir relações, unicidade e operações transacionais; guardar movimentos, eventos e auditoria; oferecer consultas de apuração. |
 | Interface Python | Cadastrar, revisar divergências, aprovar contagens e custos, operar conciliação e apresentar indicadores. |
 
-Nem toda macro vira trigger. Operações com várias entidades, como registrar compra, estornar venda ou aprovar contagem, precisam de ação transacional explícita. Triggers pequenos podem atender auditoria e invariantes locais. Antes de expor tabelas pela API do Supabase, o desenho de acesso por loja deve incluir permissões de tabela e políticas RLS coerentes com os papéis definidos.
-
-Referência de plataforma: [segurança da Data API](https://supabase.com/docs/guides/api/securing-your-api), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security).
+Nem toda macro vira trigger. Operações com várias entidades, como registrar compra, estornar venda ou aprovar contagem, precisam de ação transacional explícita. Triggers pequenos podem atender auditoria e invariantes locais. Na primeira versão local, a aplicação Python deve usar um usuário próprio do banco com permissões mínimas, e o PostgreSQL não deve ser exposto diretamente à internet. Se houver acesso remoto no futuro, será necessário revisar autenticação e isolamento por loja.
