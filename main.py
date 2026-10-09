@@ -24,8 +24,9 @@ SETORLOGADO = None
 FUNCOES AUXILIARES
 ===================================================
 '''
-
+#conectar ao banco
 def ConectarBanco():
+
     global STATUS
 
     conexao = psycopg.connect(
@@ -35,23 +36,47 @@ def ConectarBanco():
     user= USUARIO,
     password= os.environ["FLAME_DB_PASSWORD"]
     )
-
     STATUS = "Banco Conectado"
     return conexao
 
 Conn = ConectarBanco()
 
-'''
-===================================================
-FUNCOES PRINCIPAIS
-===================================================
-'''
+#executa procecure login no banco
 def FazerLogin(conn, login, password):
     sql=conn.cursor()
     sql.execute("CALL PROC_LOGIN(%s, %s, NULL, NULL, NULL ,NULL)",(login, password))
 
     rs = sql.fetchone()
     return rs
+
+#se login ok fecha o frame e abre menu
+def FecharLogin(fraLogin, principal, entryUsuario, entrySenha):
+    fraLogin.place_forget()
+    fraLogin.grab_release()
+    fraLogin.after(500,lambda: AbrirMenu(principal, fraLogin, entryUsuario, entrySenha))
+
+#deslogar e voltar fra login
+def Logout(fraMenu, fraLogin, entryUsuario, entrySenha):
+    global IDUSUARIOLOGADO, USUARIOLOGADO, SETORLOGADO
+
+    IDUSUARIOLOGADO = USUARIOLOGADO = SETORLOGADO = None
+    fraMenu.destroy()
+
+    entryUsuario.delete(0, "end")
+    entrySenha.delete(0, "end")
+
+    def reabrirlogin():
+        fraLogin.place(relx = 0.5, rely = 0.5, anchor = 'center')
+        fraLogin.grab_set()
+
+    fraLogin.after(1000, reabrirlogin)
+
+'''
+===================================================
+FUNCOES PRINCIPAIS
+===================================================
+'''
+
 
 '''
 ===================================================
@@ -76,7 +101,7 @@ def IniciarSistema():
     lblstatusbanco.pack(side="left", padx=20, pady=2)
 
     lblVersao = ctk.CTkLabel(fraRodape, text="Versão: Desenvolvimento")
-    lblVersao.pack(side='left', padx=20, pady=2)
+    lblVersao.pack(side='right', padx=20, pady=2)
 
     lblIdUsuarioLogado = ctk.CTkLabel(fraRodape, text=None)
     lblIdUsuarioLogado.pack(side='left', padx=20, pady=2)
@@ -87,6 +112,7 @@ def IniciarSistema():
     #FRAME LOGIN
     fraLogin = ctk.CTkFrame(principal, width=300, height=600)
     fraLogin.place(relx = 0.5, rely = 0.5, anchor = 'center')
+    fraLogin.grab_set()
 
     titLogin = ctk.CTkLabel(fraLogin, text= "FLAME GESTOR", )
     titLogin.place(relx=0.5, rely= 0.01, anchor='n')
@@ -111,6 +137,7 @@ def IniciarSistema():
 
     #validar entrys e chamar login
     def ChamarLogin():
+
         global IDUSUARIOLOGADO, USUARIOLOGADO, SETORLOGADO
 
         login = entryUsuario.get().strip()
@@ -121,17 +148,14 @@ def IniciarSistema():
             entryUsuario.focus_force()
             return
 
-        status, idusuario, usuario, setor = FazerLogin(
-                Conn, login, password)
+        status, idusuario, usuario, setor = FazerLogin(Conn, login, password)
 
         if status != 'OK':
             if status =='USUARIO_INVALIDO':
                 lblMsg.configure(text="Usuario Invalido")
                 entryUsuario.focus_force()
             else: lblMsg.configure(text="Usuario ou senha invalidos")
-
         else:
-
             lblMsg.configure(text='Logado com Sucesso!')
 
             IDUSUARIOLOGADO = idusuario
@@ -141,10 +165,9 @@ def IniciarSistema():
             lblIdUsuarioLogado.configure(text=f"ID : {IDUSUARIOLOGADO}")
             lblUsuarioLogado.configure(text=f"USUARIO: {USUARIOLOGADO}")
 
-            def fecharfra():
-                fraLogin.place_forget()
+            fraLogin.after(1000,lambda: FecharLogin(fraLogin, principal, entryUsuario, entrySenha))
 
-            fraLogin.after(1000,fecharfra)
+    principal.after(100,entryUsuario.focus_force)
 
     btnEntrar.configure(command= ChamarLogin)
 
@@ -152,9 +175,18 @@ def IniciarSistema():
 
     entrySenha.bind("<Return>", lambda event: ChamarLogin())
 
-    principal.after(100,entryUsuario.focus_force)
-
-    #MAINLOOP
+    #Mantem a janela
     principal.mainloop()
+
+#config menu na janela
+def AbrirMenu(principal, fraLogin, entryUsuario, entrySenha):
+
+    fraMenu = ctk.CTkFrame(principal, width=200)
+    fraMenu.pack(side= 'left', fill ="y", padx= 20, pady=20)
+
+    btnLogout = ctk.CTkButton(fraMenu, text='Logout',
+    command= lambda:Logout(fraMenu, fraLogin, entryUsuario, entrySenha)
+    )
+    btnLogout.pack()
 
 IniciarSistema()
