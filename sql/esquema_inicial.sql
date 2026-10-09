@@ -375,10 +375,10 @@ BEGIN
         RETURN;
     END IF;
 
-    IF P_SENHA IS NULL OR OCTET_LENGTH(P_SENHA) NOT BETWEEN 8 AND 72
+    IF P_SENHA IS NULL OR OCTET_LENGTH(P_SENHA) NOT BETWEEN 4 AND 72
         OR BTRIM(P_SENHA) = '' OR P_SENHA ~ '[[:cntrl:]]' THEN
         RETORNO := 'SENHA_INVALIDA';
-        MSG := 'Senha deve ter de 8 a 72 bytes e nao pode ser vazia ou conter caracteres de controle.';
+        MSG := 'Senha deve ter de 4 a 72 bytes e nao pode ser vazia ou conter caracteres de controle.';
         RETURN;
     END IF;
 
@@ -410,13 +410,11 @@ EXCEPTION
 END;
 $$;
 
--- CHAMADA: CALL PROC_LOGIN('login', 'senha', NULL, NULL, NULL, NULL, NULL, NULL);
+-- CHAMADA: CALL PROC_LOGIN('login', 'senha', NULL, NULL, NULL, NULL);
 CREATE OR REPLACE PROCEDURE PROC_LOGIN(
     IN P_USUARIO TEXT,
     IN P_SENHA TEXT,
-    OUT SUCESSO BOOLEAN,
     OUT RETORNO TEXT,
-    OUT MSG TEXT,
     OUT ID_USUARIO INT,
     OUT USUARIO TEXT,
     OUT SETOR TEXT
@@ -432,7 +430,6 @@ DECLARE
     V_LIBERAUSUARIO SMALLINT := 0;
     V_LIBERASENHA SMALLINT := 0;
 BEGIN
-    SUCESSO := FALSE;
     ID_USUARIO := NULL;
     USUARIO := NULL;
     SETOR := NULL;
@@ -459,27 +456,21 @@ BEGIN
 
     IF V_LIBERAUSUARIO = 0 AND V_LIBERASENHA = 0 THEN
         RETORNO := 'USUARIO_INVALIDO';
-        MSG := 'Usuario e/ou senha invalidos.';
         RETURN;
     ELSIF V_LIBERAUSUARIO = 0 AND V_LIBERASENHA = 1 THEN
         RETORNO := 'USUARIO_OU_SENHA_INVALIDOS';
-        MSG := 'Usuario e/ou senha invalidos.';
         RETURN;
     ELSIF V_LIBERAUSUARIO = 1 AND V_LIBERASENHA = 0 THEN
         RETORNO := 'SENHA_INVALIDA';
-        MSG := 'Senha invalida.';
         RETURN;
     END IF;
 
     IF V_STATUS = 'INATIVO' THEN
         RETORNO := 'USUARIO_INATIVO';
-        MSG := 'Usuario inativo.';
         RETURN;
     END IF;
 
-    SUCESSO := TRUE;
     RETORNO := 'OK';
-    MSG := 'Logado com sucesso.';
     ID_USUARIO := V_ID_USUARIO;
     USUARIO := V_USUARIO;
     SETOR := V_SETOR;
