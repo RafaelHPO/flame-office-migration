@@ -2,7 +2,7 @@
 
 Projeto de migração de um sistema operacional baseado em Excel/VBA/Power Query para uma aplicação modular de conciliação de delivery, estoque, compras, finanças e precificação. A primeira versão está sendo planejada com PostgreSQL local e uma interface em Python.
 
-**Estado:** levantamento funcional, modelo conceitual e rascunho SQL, agora incluindo contas a pagar/receber, repasses e conciliação bancária. O esquema ainda está em revisão; integrações e interface não foram implementadas neste repositório. O proprietário do sistema fará a implementação; esta documentação registra as decisões e o caminho de migração.
+**Estado:** levantamento funcional, modelo conceitual e rascunho SQL, agora incluindo contas a pagar/receber, repasses e conciliação bancária. O esquema ainda está em revisão; integrações ainda não foram implementadas; a interface tem um protótipo inicial em `main.py`, com login ainda pendente. O proprietário do sistema fará a implementação; esta documentação registra as decisões e o caminho de migração.
 
 ## Tecnologias previstas
 
@@ -10,7 +10,7 @@ Projeto de migração de um sistema operacional baseado em Excel/VBA/Power Query
 - **PostgreSQL local:** dados relacionais, integridade, operações transacionais e consultas, sem depender de plano pago.
 - **XML/JSON:** formatos de entrada previstos para pedidos e extratos das plataformas.
 
-Essas tecnologias descrevem o plano. O repositório contém o primeiro rascunho SQL, mas ainda não contém código Python. A implementação será publicada conforme for desenvolvida. A hospedagem poderá ser reavaliada se houver necessidade de acesso remoto ou disponibilidade contínua.
+Essas tecnologias descrevem o plano. O repositório contém o rascunho SQL e o início da interface Python. `main.py` usa variáveis de ambiente para host, usuário e senha do banco; não contém credenciais. A implementação será publicada conforme for desenvolvida. A hospedagem poderá ser reavaliada se houver necessidade de acesso remoto ou disponibilidade contínua.
 
 ## Objetivo
 
