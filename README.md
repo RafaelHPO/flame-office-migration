@@ -49,7 +49,11 @@ O modelo atende uma loja inicialmente e prevê outras lojas no futuro. Uma integ
 - [Inventário funcional do legado](docs/01_inventario_funcional.md): funções existentes e destino proposto.
 - [Modelo conceitual](docs/02_modelo_conceitual.md): entidades, fluxos e regras de desenho.
 - [Roteiro de migração](docs/03_roteiro.md): sequência de trabalho e critérios de conferência.
-- [Rascunho do esquema SQL](sql/esquema_inicial.sql): tabelas iniciais escritas pelo proprietário e criadas com sucesso em um esquema isolado de teste PostgreSQL 17; o bloco financeiro é uma proposta posterior e ainda não foi executado. Ainda não é uma migração definitiva.
+- [Rascunho do esquema SQL](sql/esquema_inicial.sql): tabelas iniciais, configuração/licença e procedimentos de cadastro e login. As alterações recentes e o bloco financeiro ainda não foram executados em PostgreSQL; este arquivo não é uma migração definitiva.
+
+## Estado do cadastro de estoque
+
+O cadastro de insumos recebe as quantidades de compra e de consumo informadas pelo usuário. As unidades de medida são indicativas; a conversão é definida por insumo. O custo de uma porção é calculado como `custo da embalagem / quantidade de compra * quantidade de consumo`. O custo médio começa em zero e será atualizado quando houver entrada de estoque. A rotina de entrada ainda não foi implementada.
 
 ## Escopo público
 
