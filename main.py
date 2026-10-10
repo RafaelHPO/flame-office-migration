@@ -41,33 +41,83 @@ def ConectarBanco():
 
 Conn = ConectarBanco()
 
+#validar entrys e chamar login
+def ChamarLogin(entryUsuario, entrySenha, lblMsg,
+lblIdUsuarioLogado, lblUsuarioLogado, fraLogin, principal):
+
+    global IDUSUARIOLOGADO, USUARIOLOGADO, SETORLOGADO
+
+    login = entryUsuario.get().strip()
+    password = entrySenha.get()
+
+    if not login or not password:
+        lblMsg.configure(text='Insira usuario e senha validos')
+        entryUsuario.focus_force()
+        return
+
+    status, idusuario, usuario, setor = FazerLogin(Conn, login, password)
+
+    if status != 'OK':
+        if status =='USUARIO_INVALIDO':
+            lblMsg.configure(text="Usuario Invalido")
+            entryUsuario.focus_force()
+        else: lblMsg.configure(text="Usuario ou senha invalidos")
+    else:
+        lblMsg.configure(text='Logado com Sucesso!')
+
+        IDUSUARIOLOGADO = idusuario
+        USUARIOLOGADO = usuario
+        SETORLOGADO = setor
+
+        lblIdUsuarioLogado.configure(text=f"ID : {IDUSUARIOLOGADO}")
+        lblUsuarioLogado.configure(text=f"USUARIO: {USUARIOLOGADO}")
+
+        fraLogin.after(1000,lambda:
+        FecharLogin(fraLogin, principal, entryUsuario, entrySenha,
+                    lblMsg,lblIdUsuarioLogado, lblUsuarioLogado))
+
 #executa procecure login no banco
 def FazerLogin(conn, login, password):
     sql=conn.cursor()
-    sql.execute("CALL PROC_LOGIN(%s, %s, NULL, NULL, NULL ,NULL)",(login, password))
+    sql.execute("CALL PROC_LOGIN(%s, %s, NULL, NULL, NULL ,NULL)",
+                (login, password))
 
     rs = sql.fetchone()
     return rs
 
 #se login ok fecha o frame e abre menu
-def FecharLogin(fraLogin, principal, entryUsuario, entrySenha):
+def FecharLogin(fraLogin, principal, entryUsuario, entrySenha, lblMsg,
+                lblIdUsuarioLogado, lblUsuarioLogado):
+
     fraLogin.place_forget()
     fraLogin.grab_release()
-    fraLogin.after(500,lambda: AbrirMenu(principal, fraLogin, entryUsuario, entrySenha))
+
+    fraLogin.after(500,lambda: AbrirMenu
+    (principal, fraLogin, entryUsuario, entrySenha, lblMsg,
+     lblIdUsuarioLogado, lblUsuarioLogado))
 
 #deslogar e voltar fra login
-def Logout(fraMenu, fraLogin, entryUsuario, entrySenha):
+def Logout(
+    fraMenu, fraLogin, entryUsuario, entrySenha, lblMsg,
+    lblIdUsuarioLogado, lblUsuarioLogado):
+
     global IDUSUARIOLOGADO, USUARIOLOGADO, SETORLOGADO
 
     IDUSUARIOLOGADO = USUARIOLOGADO = SETORLOGADO = None
+
+    lblIdUsuarioLogado.configure(text="")
+
+    lblUsuarioLogado.configure(text="")
+
     fraMenu.destroy()
 
-    entryUsuario.delete(0, "end")
-    entrySenha.delete(0, "end")
-
     def reabrirlogin():
+
         fraLogin.place(relx = 0.5, rely = 0.5, anchor = 'center')
         fraLogin.grab_set()
+        entryUsuario.delete(0, "end")
+        entrySenha.delete(0, "end")
+        lblMsg.configure(text="")
 
     fraLogin.after(1000, reabrirlogin)
 
@@ -135,58 +185,55 @@ def IniciarSistema():
     lblMsg = ctk.CTkLabel(fraLogin, text= None)
     lblMsg.place(relx=0.5, rely= 0.6, anchor = 'center')
 
-    #validar entrys e chamar login
-    def ChamarLogin():
-
-        global IDUSUARIOLOGADO, USUARIOLOGADO, SETORLOGADO
-
-        login = entryUsuario.get().strip()
-        password = entrySenha.get()
-
-        if not login or not password:
-            lblMsg.configure(text='Insira usuario e senha validos')
-            entryUsuario.focus_force()
-            return
-
-        status, idusuario, usuario, setor = FazerLogin(Conn, login, password)
-
-        if status != 'OK':
-            if status =='USUARIO_INVALIDO':
-                lblMsg.configure(text="Usuario Invalido")
-                entryUsuario.focus_force()
-            else: lblMsg.configure(text="Usuario ou senha invalidos")
-        else:
-            lblMsg.configure(text='Logado com Sucesso!')
-
-            IDUSUARIOLOGADO = idusuario
-            USUARIOLOGADO = usuario
-            SETORLOGADO = setor
-
-            lblIdUsuarioLogado.configure(text=f"ID : {IDUSUARIOLOGADO}")
-            lblUsuarioLogado.configure(text=f"USUARIO: {USUARIOLOGADO}")
-
-            fraLogin.after(1000,lambda: FecharLogin(fraLogin, principal, entryUsuario, entrySenha))
-
     principal.after(100,entryUsuario.focus_force)
 
-    btnEntrar.configure(command= ChamarLogin)
+    btnEntrar.configure(command=lambda: ChamarLogin
+    (entryUsuario, entrySenha, lblMsg,
+    lblIdUsuarioLogado, lblUsuarioLogado, fraLogin, principal))
 
-    entryUsuario.bind("<Return>", lambda event: ChamarLogin())
+    entryUsuario.bind("<Return>", lambda event: ChamarLogin
+    (entryUsuario, entrySenha, lblMsg,
+    lblIdUsuarioLogado, lblUsuarioLogado, fraLogin, principal))
 
-    entrySenha.bind("<Return>", lambda event: ChamarLogin())
+    entrySenha.bind("<Return>", lambda event: ChamarLogin
+    (entryUsuario, entrySenha, lblMsg,
+    lblIdUsuarioLogado, lblUsuarioLogado, fraLogin, principal))
 
     #Mantem a janela
     principal.mainloop()
 
 #config menu na janela
-def AbrirMenu(principal, fraLogin, entryUsuario, entrySenha):
+def AbrirMenu(principal, fraLogin, entryUsuario, entrySenha, lblMsg,
+    lblIdUsuarioLogado, lblUsuarioLogado):
 
     fraMenu = ctk.CTkFrame(principal, width=200)
+    fraMenu.pack_propagate(False)
     fraMenu.pack(side= 'left', fill ="y", padx= 20, pady=20)
 
-    btnLogout = ctk.CTkButton(fraMenu, text='Logout',
-    command= lambda:Logout(fraMenu, fraLogin, entryUsuario, entrySenha)
-    )
-    btnLogout.pack()
+    #Botoes menu
+    btnSistema = ctk.CTkButton(fraMenu, text='SISTEMA', height= 40)
+
+    btnCadastros = ctk.CTkButton(fraMenu, text='CADASTROS', height= 40)
+
+    btnEstoque = ctk.CTkButton(fraMenu, text='ESTOQUE', height= 40)
+
+    btnVendas = ctk.CTkButton(fraMenu, text='VENDAS', height= 40)
+
+    btnFinanceiro = ctk.CTkButton(fraMenu, text='FINANCEIRO', height= 40)
+
+    btnDashboard = ctk.CTkButton(fraMenu, text='DASHBOARD', height= 40)
+
+    btnLogout = ctk.CTkButton(fraMenu, text='LOGOUT', height= 40,
+    command= lambda:Logout(fraMenu, fraLogin, entryUsuario, entrySenha,
+    lblMsg, lblIdUsuarioLogado, lblUsuarioLogado))
+
+    #posição botoes
+    btnLogout.pack(side= 'bottom', fill = 'x', padx=10, pady= 20)
+    btnSistema.pack(fill= 'x', padx=10, pady= 20)
+    btnCadastros.pack(fill= 'x', padx=10, pady= 20)
+    btnEstoque.pack(fill= 'x', padx=10, pady= 20)
+    btnVendas.pack(fill= 'x', padx=10, pady= 20)
+    btnFinanceiro.pack(fill= 'x', padx=10, pady= 20)
+    btnDashboard.pack(fill= 'x', padx=10, pady= 20)
 
 IniciarSistema()
